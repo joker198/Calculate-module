@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 /**
  *
  * @author phamt
@@ -64,6 +65,7 @@ public class Marker implements NeededTool{
     {
         //
     }
+    
     public Marker(String url, String start_time, String end_time)
     {
         this.url = url;
@@ -71,12 +73,20 @@ public class Marker implements NeededTool{
         this.end_time = end_time;
     }
     
+    /**
+     * @return
+     * @throws JSONException 
+     */
     public Marker[] getMarkers() throws JSONException
     {
         JSONArray jsonArray = getJsonFromAPI(this.url);
         return this.jsonToMarkers(jsonArray);
     }
     
+    /**
+     * @param url
+     * @return 
+     */
     @Override
     public JSONArray getJsonFromAPI(String url) {
         StringBuilder response = new StringBuilder();
@@ -106,6 +116,11 @@ public class Marker implements NeededTool{
         return null;
     }
     
+    /**
+     * @param jsonArray
+     * @return
+     * @throws JSONException 
+     */
     private Marker[] jsonToMarkers(JSONArray jsonArray) throws JSONException {
         int size = jsonArray.length();
         Marker result[] = new Marker[size];
@@ -125,6 +140,9 @@ public class Marker implements NeededTool{
         return result;
     }
     
+    /**
+     * @param marker 
+     */
     public void displayMarker(Marker marker)
     {
         System.out.println(marker.lat+" "+marker.lng+"\n");

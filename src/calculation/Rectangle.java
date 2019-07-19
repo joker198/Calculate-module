@@ -61,12 +61,20 @@ public class Rectangle implements NeededTool{
         return north;
     }
     
+    /**
+     * @return
+     * @throws JSONException 
+     */
     public Rectangle[] getRectangles() throws JSONException
     {
         JSONArray jsonArray = getJsonFromAPI(this.url);
         return this.jsonToRectangle(jsonArray);
     }
     
+    /**
+     * @param url
+     * @return 
+     */
     @Override
     public JSONArray getJsonFromAPI(String url) {
         StringBuilder response = new StringBuilder();
@@ -94,6 +102,13 @@ public class Rectangle implements NeededTool{
         return null;
     }
     
+    /**
+     * Convert JSONArray to array Rectangle
+     *
+     * @param jsonArray
+     * @return
+     * @throws JSONException 
+     */
     private Rectangle[] jsonToRectangle(JSONArray jsonArray) throws JSONException
     {
         int numOfRecord = jsonArray.length();
@@ -112,6 +127,11 @@ public class Rectangle implements NeededTool{
         return rectangles;
     }
     
+    /**
+     * Print Rectangle record to test
+     *
+     * @param rectangle 
+     */
     public void displayRectangle(Rectangle rectangle)
     {
         System.out.println(rectangle.height+" "+rectangle.width+"\n");

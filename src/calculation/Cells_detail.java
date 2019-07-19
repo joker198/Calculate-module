@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +28,7 @@ public class Cells_detail {
     {
         marker_count = 0;
     }
+    
     public Cells_detail(String url)
     {
         this.url = url;
@@ -82,7 +82,12 @@ public class Cells_detail {
         this.indicator = indicator;
     }
     
-    // chua xong 
+    /**
+     * Post JSONObject array to API to save data
+     *
+     * @param jsonObject
+     * @return 
+     */
     public int postJsonToApi(JSONObject jsonObject)
     {
         StringBuilder response = new StringBuilder();
@@ -113,6 +118,13 @@ public class Cells_detail {
         System.out.println();
         return 0;
     }
+    
+    /**
+     * Convert a cell to JSON
+     *
+     * @param oneCell
+     * @return 
+     */
     public JSONObject cellToJSONObject(Cells_detail oneCell)
     {
         JSONObject cell = new JSONObject();
@@ -134,6 +146,11 @@ public class Cells_detail {
         return null;
     }
     
+    /**
+     * Print cells_detail record to test
+     *
+     * @param cell 
+     */
     public void detail(Cells_detail cell)
     {
         System.out.println(cell.x_axis+" "+cell.y_axis+" "+cell.color+" "+cell.avg_speed

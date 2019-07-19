@@ -5,6 +5,9 @@
  */
 package calculation;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -18,11 +21,26 @@ import org.json.JSONObject;
 public class Calculation {
     public static String markerUrl = "http://68.183.238.65:8000/api/data/markers";
     public static String rectangleUrl = "http://68.183.238.65:8000/api/data/rectangles";
-    public static String cellsUrl = "http://68.183.238.65:8000/api/data/savedata";
-    public static String start_time = "2019-05-10 02:25:47";
-    public static String end_time = "2019-05-10 07:14:59";
+    public static String cellsUrl = "http://68.183.238.65:8000/api/data/cells-detail";
+    public static String start_time;
+    public static String end_time;
     public static int count = 0;
     
+    public Calculation()
+    {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        start_time = dateFormat.format(calendar.getTime());
+        calendar.add(Calendar.MINUTE, -30);
+        end_time = dateFormat.format(calendar.getTime());
+    }
+    
+    /**
+     * Match color using speed
+     *
+     * @param speed
+     * @return 
+     */
     public static String matchColor(double speed)
     {
         if(speed <= 10) return "#FF0000";
@@ -31,6 +49,15 @@ public class Calculation {
         return "#0000FF";
     }
     
+    /**
+     * Find y_axis of cells
+     *
+     * @param east
+     * @param west
+     * @param lng
+     * @param width
+     * @return 
+     */
     public static int whereX(double east, double west, double lng, int width)
     {
         int result = (int) Math.floor((lng - west) / (east - west) *width );
@@ -39,6 +66,15 @@ public class Calculation {
         return result;
     }
     
+    /**
+     * Find y_axis of cells
+     *
+     * @param south
+     * @param north
+     * @param lat
+     * @param height
+     * @return 
+     */
     public static int whereY(double south, double north, double lat, int height)
     {
         int result = (int) Math.floor((lat - south) / (north - south)  * height);
@@ -47,6 +83,14 @@ public class Calculation {
         return result;
     }
     
+    /**
+     * fitCells using speed for indicator
+     *
+     * @param markers
+     * @param rectangle
+     * @param algorithm
+     * @return 
+     */
     public static JSONObject[] fitCells(Marker[] markers, Rectangle rectangle, int algorithm)
     {
         int id = rectangle.getId();
@@ -98,19 +142,22 @@ public class Calculation {
         }
         return result;
     }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Marker marker = new Marker(markerUrl, start_time, end_time);
+        Calculation execute = new Calculation();
+        Marker marker = new Marker(markerUrl, Calculation.start_time, Calculation.end_time);
         Rectangle rectangle = new Rectangle(rectangleUrl);
         Cells_detail cellsDetail = new Cells_detail(cellsUrl);
+
         try {
             Rectangle[] rectangles = rectangle.getRectangles();
             Marker[] markers = marker.getMarkers();
             JSONArray diget = new JSONArray();
             for (Rectangle aRectangle:rectangles) {
-                JSONObject cells[] = fitCells(markers, aRectangle, 1);
+                JSONObject cells[] = fitCells(markers, aRectangle, 2);
                 for (JSONObject cell : cells) {
                     diget.put(cell);
                 }
@@ -118,8 +165,8 @@ public class Calculation {
             //kết quả:
             JSONObject data = new JSONObject();
             data.put("data", diget);
+            //POST kết quả tính toán lên Server
             cellsDetail.postJsonToApi(data);
-            System.out.println(data);
         } catch (JSONException ex) {
             Logger.getLogger(Calculation.class.getName()).log(Level.SEVERE, null, ex);
         }
