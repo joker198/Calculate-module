@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package calculation;
 
 import java.io.BufferedReader;
@@ -18,25 +13,47 @@ import org.json.JSONObject;
 
 /**
  *
- * @author phamt
+ * @author joker
  */
 public class Rectangle implements NeededTool{
-    private int id, height, width;
+    private int id, height, width, cell_width, cell_height;
     private double east, west, south, north;
-    private String url;
+    private String getUrl, postUrl;
     
     public Rectangle()
     {
         //
     }
-    public Rectangle(String url)
+
+    public int getCell_width() {
+        return cell_width;
+    }
+
+    public void setCell_width(int cell_width) {
+        this.cell_width = cell_width;
+    }
+
+    public int getCell_height() {
+        return cell_height;
+    }
+
+    public void setCell_height(int cell_height) {
+        this.cell_height = cell_height;
+    }
+
+    public void setPostUrl(String postUrl) {
+        this.postUrl = postUrl;
+    }
+
+    public Rectangle(String getUrl)
     {
-        this.url = url;
+        this.getUrl = getUrl;
     }
 
     public int getId() {
         return id;
     }
+
     public int getHeight() {
         return height;
     }
@@ -60,26 +77,26 @@ public class Rectangle implements NeededTool{
     public double getNorth() {
         return north;
     }
-    
+
     /**
      * @return
      * @throws JSONException 
      */
     public Rectangle[] getRectangles() throws JSONException
     {
-        JSONArray jsonArray = getJsonFromAPI(this.url);
+        JSONArray jsonArray = getJsonFromAPI(this.getUrl);
         return this.jsonToRectangle(jsonArray);
-    }
-    
+    } 
+
     /**
-     * @param url
+     * @param getUrl
      * @return 
      */
     @Override
-    public JSONArray getJsonFromAPI(String url) {
+    public JSONArray getJsonFromAPI(String getUrl) {
         StringBuilder response = new StringBuilder();
         try {
-            URL markerUrl = new URL(url);
+            URL markerUrl = new URL(getUrl);
             HttpURLConnection connection = (HttpURLConnection) markerUrl.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json");
@@ -101,12 +118,12 @@ public class Rectangle implements NeededTool{
         }
         return null;
     }
-    
+
     /**
      * Convert JSONArray to array Rectangle
      *
      * @param jsonArray
-     * @return
+     * @return Rectangle Array
      * @throws JSONException 
      */
     private Rectangle[] jsonToRectangle(JSONArray jsonArray) throws JSONException
@@ -125,15 +142,5 @@ public class Rectangle implements NeededTool{
             rectangles[i].north = (double) aRecord.getDouble("north");
         }
         return rectangles;
-    }
-    
-    /**
-     * Print Rectangle record to test
-     *
-     * @param rectangle 
-     */
-    public void displayRectangle(Rectangle rectangle)
-    {
-        System.out.println(rectangle.height+" "+rectangle.width+"\n");
     }
 }

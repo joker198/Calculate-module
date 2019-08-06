@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package calculation;
 
 import java.io.BufferedReader;
@@ -16,24 +11,31 @@ import org.json.JSONObject;
 
 /**
  *
- * @author phamt
+ * @author joker
  */
 public class Cells_detail {
     private int x_axis, y_axis, id_cell, marker_count, algorithm;
-    private String start_time, end_time, color;
+    private String start_time, end_time, color, getUrl, postUrl;
     private double avg_speed, indicator;
-    private String url;
-    
+
     public Cells_detail()
     {
         marker_count = 0;
     }
-    
-    public Cells_detail(String url)
+
+    public Cells_detail(String getUrl)
     {
-        this.url = url;
+        this.getUrl = getUrl;
     }
-    
+
+    public void setGetUrl(String getUrl) {
+        this.getUrl = getUrl;
+    }
+
+    public void setPostUrl(String postUrl) {
+        this.postUrl = postUrl;
+    }
+
     public void setX_axis(int x_axis) {
         this.x_axis = x_axis;
     }
@@ -53,7 +55,7 @@ public class Cells_detail {
     public int getMarkerCount(){
         return this.marker_count;
     }
-    
+
     public void setAlgorithm(int algorithm) {
         this.algorithm = algorithm;
     }
@@ -81,7 +83,7 @@ public class Cells_detail {
     public void setIndicator(double indicator) {
         this.indicator = indicator;
     }
-    
+
     /**
      * Post JSONObject array to API to save data
      *
@@ -92,7 +94,7 @@ public class Cells_detail {
     {
         StringBuilder response = new StringBuilder();
         try {
-            URL markerUrl = new URL(url);
+            URL markerUrl = new URL(getUrl);
             HttpURLConnection connection = (HttpURLConnection) markerUrl.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -103,7 +105,6 @@ public class Cells_detail {
                 byte[] input = data.getBytes("utf-8");
                 outputStream.write(input, 0, input.length);
             }
-            
             try(BufferedReader br = new BufferedReader(
             new InputStreamReader(connection.getInputStream(), "utf-8"))) {
               String responseLine = null;
@@ -118,7 +119,7 @@ public class Cells_detail {
         System.out.println();
         return 0;
     }
-    
+
     /**
      * Convert a cell to JSON
      *
@@ -144,21 +145,5 @@ public class Cells_detail {
             System.out.println(e);
         }
         return null;
-    }
-    
-    /**
-     * Print cells_detail record to test
-     *
-     * @param cell 
-     */
-    public void detail(Cells_detail cell)
-    {
-        System.out.println(cell.x_axis+" "+cell.y_axis+" "+cell.color+" "+cell.avg_speed
-                +" "+cell.marker_count
-        );
-    }
-
-    private String cellsToJson(Cells_detail[] cellArray) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
