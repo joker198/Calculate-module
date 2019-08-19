@@ -11,7 +11,7 @@ import java.util.Date;
  * @author joker
  */
 public class CalculateModule {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     /**
      * Split duration between from "end_time" and before "duration" into array intervals

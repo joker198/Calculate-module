@@ -15,24 +15,27 @@ import org.json.JSONObject;
  *
  * @author joker
  */
-public class Marker implements NeededTool{
-    private int record_user;
-    private String getUrl, vehicle, direct, record_time, distance, created_at, updated_at;
+public class Marker{
+    private String recordUserArray;
+    private long record_user;
     private double lat, lng, speed;
-    private String start_time, end_time;
+    private String getUrl, vehicle, direct, record_time, distance, created_at, updated_at, start_time, end_time;
     
-    public int getRecord_user() {
+    public long getRecord_user()
+    {
         return record_user;
     }
 
-    public String getVehicle() {
+    public String getVehicle()
+    {
         return vehicle;
     }
 
-    public String getDirect() {
+    public String getDirect()
+    {
         return direct;
     }
-
+    
     public String getRecord_time() {
         return record_time;
     }
@@ -60,6 +63,10 @@ public class Marker implements NeededTool{
     public double getSpeed() {
         return speed;
     }
+    public String getNumOfRecordUser()
+    {
+        return recordUserArray;
+    }
     
     public Marker()
     {
@@ -71,6 +78,7 @@ public class Marker implements NeededTool{
         this.getUrl = getUrl;
         this.start_time = start_time;
         this.end_time = end_time;
+        this.recordUserArray = "";
     }
     
     /**
@@ -79,36 +87,38 @@ public class Marker implements NeededTool{
      */
     public Marker[] getMarkers() throws JSONException
     {
-        JSONArray jsonArray = getJsonFromAPI(this.getUrl);
-        return this.jsonToMarkers(jsonArray);
+        JSONObject responseData = getJsonFromAPI(this.getUrl);
+        this.recordUserArray = responseData.getJSONArray("user").toString();
+        JSONArray markers = responseData.getJSONArray("markers");
+        return this.jsonToMarkers(markers);
     }
     
     /**
      * @param getUrl
      * @return 
      */
-    @Override
-    public JSONArray getJsonFromAPI(String getUrl) {
+    public JSONObject getJsonFromAPI(String getUrl) {
         StringBuilder response = new StringBuilder();
         try {
             URL markerUrl = new URL(getUrl);
             HttpURLConnection connection = (HttpURLConnection) markerUrl.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("start_time", start_time);
-            connection.setRequestProperty("end-time", end_time);
+            connection.setRequestProperty("starttime", start_time);
+            connection.setRequestProperty("endtime", end_time);
             
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
+                System.out.println(response.toString());
             }
         } catch (IOException e) {
             System.out.println(e);
         }
         try {
-            JSONArray result = new JSONArray(response.toString());
+            JSONObject result = new JSONObject(response.toString());
             return result;
         } catch (JSONException ex) {
             Logger.getLogger(Marker.class.getName()).log(Level.SEVERE, null, ex);
@@ -133,9 +143,7 @@ public class Marker implements NeededTool{
             result[i].vehicle = aRecord.getString("vehicle");
             result[i].direct = aRecord.getString("direct");
             result[i].record_time = aRecord.getString("record_time");
-            result[i].record_user = aRecord.getInt("record_user");
-            result[i].created_at = aRecord.getString("created_at");
-            result[i].updated_at = aRecord.getString("updated_at");
+            result[i].record_user = aRecord.getLong("record_user");
         }
         return result;
     }

@@ -23,16 +23,8 @@ public class Cells_detail {
         marker_count = 0;
     }
 
-    public Cells_detail(String getUrl)
+    public Cells_detail(String postUrl)
     {
-        this.getUrl = getUrl;
-    }
-
-    public void setGetUrl(String getUrl) {
-        this.getUrl = getUrl;
-    }
-
-    public void setPostUrl(String postUrl) {
         this.postUrl = postUrl;
     }
 
@@ -48,8 +40,13 @@ public class Cells_detail {
         this.id_cell = id_cell;
     }
 
-    public void increaseMarkerCount() {
-        this.marker_count ++;
+    public void increaseMarkerCount()
+    {
+        this.marker_count++;
+    }
+    
+    public void setMarkerCount(int marker_count) {
+        this.marker_count = marker_count;
     }
 
     public int getMarkerCount(){
@@ -94,11 +91,12 @@ public class Cells_detail {
     {
         StringBuilder response = new StringBuilder();
         try {
-            URL markerUrl = new URL(getUrl);
+            URL markerUrl = new URL(postUrl);
             HttpURLConnection connection = (HttpURLConnection) markerUrl.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("remember_token", "4bd4a7ee4215318d72b2e3ddc4bf79f9cwBa6MaOg32gpNmmPm94LkQLJeyJrC75OfoMVpQfb5MrE62NrA8tm590l3P0");
             connection.setDoOutput(true);
             try(OutputStream outputStream = connection.getOutputStream()){
                 String data = jsonObject.toString();
@@ -111,12 +109,11 @@ public class Cells_detail {
               while ((responseLine = br.readLine()) != null) {
                   response.append(responseLine.trim());
               }
-              System.out.println(response.toString());
+                System.out.println(response.toString());
           }
         } catch (IOException e) {
             System.out.println(e);
         }
-        System.out.println();
         return 0;
     }
 
@@ -140,7 +137,8 @@ public class Cells_detail {
             cell.put("color", oneCell.color);
             cell.put("indicator", oneCell.indicator);
             cell.put("algorithm", oneCell.algorithm);
-            return cell;    
+            cell.put("algorithm_detail", "{}");
+            return cell;
         } catch (JSONException e) {
             System.out.println(e);
         }
